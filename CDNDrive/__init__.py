@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """CDNDrive
-https://github.com/apachecn/CDNDrive"""
+https://github.com/lemonchu/CDNDrive"""
 
-__author__ = "ApacheCN"
-__email__ = "apachecn@163.com"
+__author__ = "LemonPig"
+__email__ = "lemonpig-chu@qq.com"
 __license__ = "SATA"
-__version__ = "2022.3.20.0"
+__version__ = "2022.07.21.3"
