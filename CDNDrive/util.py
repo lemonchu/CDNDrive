@@ -8,9 +8,8 @@ import types
 import requests
 import json
 import time
-import tempfile
 
-bundle_dir = tempfile.gettempdir()
+bundle_dir = '.\\cdrive_data\\'
 cookie_fname = 'cdrive_cookies.json'
 history_dir = 'cdrive_history'
 
@@ -144,8 +143,16 @@ def print_meta(meta_dict, prefix=""):
     for index, block_dict in enumerate(meta_dict['block']):
         print(f"{pad}分块{index + 1} ({size_string(block_dict['size'])}) URL: {block_dict['url']}")
         
+def print_clean_meta(meta_dict, prefix=""):
+    pad = ' ' * len(prefix)
+    print(f"{prefix}文件名: {meta_dict['filename']}")
+    print(f"{pad}大小: {size_string(meta_dict['size'])}")
+    print(f"{pad}SHA-1: {meta_dict['sha1']}")
+    print(f"{pad}上传时间: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(meta_dict['time']))}")
+    print(f"{pad}分块数: {len(meta_dict['block'])}")
+	
 def print_history_meta(meta_dict, prefix=""):
-    print_meta(meta_dict, prefix)
+    print_clean_meta(meta_dict, prefix)
     print(f"{' ' * len(prefix)}META URL: {meta_dict['url']}")
         
 def block_offset(meta_dict, i):
