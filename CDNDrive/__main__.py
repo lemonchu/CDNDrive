@@ -18,10 +18,10 @@ import time
 import traceback
 import types
 from concurrent.futures import ThreadPoolExecutor
-from . import __version__
-from .drivers import *
-from .encoders import *
-from .util import *
+from CDNDrive import __version__
+from CDNDrive.drivers import *
+from CDNDrive.encoders import *
+from CDNDrive.util import *
 
 encoder = None
 api = None
@@ -29,6 +29,9 @@ api = None
 succ = True
 nblocks = 0
 lock = threading.Lock()
+
+if not os.path.exists(bundle_dir):
+	safe_mkdir(bundle_dir)
 
 def load_api_by_prefix(s):
     global api
@@ -325,8 +328,11 @@ def main():
     history_parser = subparsers.add_parser("history", help="show upload history")
     history_parser.set_defaults(func=history_handle)
     
-    args = parser.parse_args()
-    args.func(args)
+    if len(sys.argv) != 1:
+        args = parser.parse_args()
+        args.func(args)
+    else:
+        interact_mode(parser, subparsers)
 
 if __name__ == "__main__":
     main()
