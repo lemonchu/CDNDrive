@@ -2,6 +2,8 @@
 
 <h4 align="center">☁️ 废墟之上，重建辉煌！ ☁️</h4>
 <h4 align="center">☁️ 支持任意文件的全速上传与下载 ☁️</h4>
+<h4 align="center">☁️ 源于 apachecn 的 CDNDrive，此项目致力于对 Windows 系统的支持 ☁️</h4>
+
 
 ## 特色
 
@@ -10,8 +12,9 @@
 - 安全：上传的文件需要通过生成的 META URL 才能访问，他人无法随意查看
 - 稳定：带有分块校验与超时重试机制，在较差的网络环境中依然能确保文件的完整性
 - 快速：支持多线程传输与断点续传，同时借助各个站点的 CDN 资源，能最大化地利用网络环境进行上传与下载
+- 便携：可以使用打包后的项目直接运行
 
-## 使用指南
+## 使用指南(源自https://github.com/apachecn/CDNDrive)
 
 ### 安装
 
@@ -24,7 +27,7 @@ pip install CDNDrive
 从源码安装：
 
 ```
-pip install git+https://github.com/apachecn/CDNDrive
+pip install git+https://github.com/lemonchu/CDNDrive
 ```
 
 ### 登录
@@ -165,10 +168,6 @@ META URL：`bdrive://d28784bff1086450a6c331fb322accccd382228e`
 
 平均速度：104.97 MB/s
 
-## 历史记录
-
-[见这里](history.md)。
-
 ## 免责声明
 
 +   请自行对重要文件做好本地备份。
@@ -185,16 +184,4 @@ META URL：`bdrive://d28784bff1086450a6c331fb322accccd382228e`
 
 ## 致谢
 
-本项目基于 [Hsury](https://github.com/Hsury) 的 [BiliDrive](https://github.com/Hsury/BiliDrive)，在此表示感谢。
-
-同时感谢 [goocarder](https://v2ex.com/t/618064) 提供的思路。
-
-## 赞助我们
-
-![](https://home.apachecn.org/img/qr/zfb_wx.png)
-
-## 另见
-
-+   [ApacheCN 学习资源](https://docs.apachecn.org/)
-+   [计算机电子书](http://it-ebooks.flygon.net)
-+   [布客新知](http://flygon.net/ixinzhi/)
+本项目基于 [apachecn](https://github.com/apachecn) 修改的 [CDNDrive](https://github.com/apachecn/CDNDrive)(源于[Hsury](https://github.com/Hsury) 的 [BiliDrive](https://github.com/Hsury/BiliDrive))进行自主探索、维护，在此表示感谢。
