@@ -8,7 +8,7 @@ class BaseApi:
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'
     }
     
-    def login(self, un, pw):
+    def login(self):
         return {
             'code': 114514,
             'message': '功能尚未实现，请使用 Cookie 登录'

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 
 import argparse
@@ -57,7 +56,7 @@ def login_handle(args):
     global api
     
     api = drivers[args.site]
-    r = api.login(args.username, args.password)
+    r = api.login()
     if r['code'] != 0:
         log(f"登录失败：{r['message']}")
         return
@@ -295,8 +294,6 @@ def main():
     
     login_parser = subparsers.add_parser("login", help="log in to the site")
     login_parser.add_argument("site", help="site", choices=drivers.keys())
-    login_parser.add_argument("username", help="username")
-    login_parser.add_argument("password", help="password")
     login_parser.set_defaults(func=login_handle)
     
     cookies_parser = subparsers.add_parser("cookies", help="set cookies to the site")

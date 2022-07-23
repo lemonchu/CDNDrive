@@ -2,7 +2,7 @@
 
 <h4 align="center">☁️ 废墟之上，重建辉煌！ ☁️</h4>
 <h4 align="center">☁️ 支持任意文件的全速上传与下载 ☁️</h4>
-<h4 align="center">☁️ 源于 apachecn 的 CDNDrive，此项目致力于对 Windows 系统的支持 ☁️</h4>
+<h4 align="center">☁️ 源于 Hsury 的 BiliDrive，此项目致力于对 Windows 系统的支持 ☁️</h4>
 
 
 ## 特色
@@ -16,13 +16,9 @@
 
 ## 使用指南(源自https://github.com/apachecn/CDNDrive)
 
-### 安装
+### 可以直接使用项目打包后的可执行文件
 
-通过`pip`（推荐）：
-
-```
-pip install CDNDrive
-```
+### 安装(pip)
 
 从源码安装：
 
@@ -30,14 +26,12 @@ pip install CDNDrive
 pip install git+https://github.com/lemonchu/CDNDrive
 ```
 
-### 登录
+### 登录(仅支持b站，其他尚未完成)
 
 ```
 cdrive login [-h] site username password
 
 site: 站点名称（见 -h）
-username: 用户名
-password: 密码
 ```
 
 > 运行 cdrive 报错

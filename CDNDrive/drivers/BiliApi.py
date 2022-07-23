@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 
 import base64
@@ -45,120 +44,54 @@ class BiliApi(BaseApi):
         self.cookies = parse_cookies(cookie_str)
         save_cookies('bili', self.cookies)
             
-    
-    # 识别验证码
-    def solve_captcha(self, image):
-        url = "https://bili.dev:2233/captcha"
-        payload = {'image': base64.b64encode(image).decode("utf-8")}
-        try:
-            j = request_retry(
-                "post", url, 
-                headers=BiliApi.default_hdrs,
-                json=payload
-            ).json()
-        except:
-            return None
-        return j['message'] if j['code'] == 0 else None
 
     @staticmethod
-    def calc_sign(param):
-        salt = "560c52ccd288fed045859ed18bffd973"
-        sign_hash = hashlib.md5()
-        sign_hash.update(f"{param}{salt}".encode())
-        return sign_hash.hexdigest()
+    def CalcSign(data):
+        parms = ''
+        for value in data:
+            parms = parms + str(value) + '=' + str(data[value]) + '&'
 
-        
-    def _get_key(self):
-        url = f"https://passport.bilibili.com/api/oauth2/getKey"
-        payload = {
-            'appkey': BiliApi.app_key,
-            'sign': self.calc_sign(f"appkey={BiliApi.app_key}"),
-        }
-        try:
-            r = request_retry(
-                "post", url, data=payload, 
-                headers=BiliApi.default_hdrs,
-                cookies=self.cookies, retry=999999
-            )
-        except:
-            return None
-        for k, v in r.cookies.items(): self.cookies[k] = v
-        j = r.json()
-        if j['code'] == 0:
-            return {
-                'key_hash': j['data']['hash'],
-                'pub_key': rsa.PublicKey.load_pkcs1_openssl_pem(j['data']['key'].encode()),
-            }
-        else:
-            return None
-        
-    # 登录一次
-    def login_once(self, username, password, captcha=None):
-        key = self._get_key()
-        if not key: return {'code': 114514, 'message': 'key 获取失败'}
-        key_hash, pub_key = key['key_hash'], key['pub_key']
-        
-        username = parse.quote_plus(username)
-        password = parse.quote_plus(base64.b64encode(rsa.encrypt(f'{key_hash}{password}'.encode(), pub_key)))
-        
-        url = f"https://passport.bilibili.com/api/v2/oauth2/login"
-        param = f"appkey={BiliApi.app_key}"
-        if captcha: param += f'&captcha={captcha}'
-        param += f"&password={password}&username={username}"
-        payload = f"{param}&sign={self.calc_sign(param)}"
-        headers = BiliApi.default_hdrs.copy()
-        headers.update({'Content-type': "application/x-www-form-urlencoded"})
-        
-        try:
-            j = request_retry(
-                "POST", url, data=payload, 
-                headers=headers, 
-                cookies=self.cookies
-            ).json()
-        except Exception as ex:
-            return {'code': 114514, 'message': str(ex)}
-            
-        if j['code'] == 0 and j['data']['status'] == 0:
-            self.cookies = {}
-            for cookie in j['data']['cookie_info']['cookies']:
-                self.cookies[cookie['name']] = cookie['value']
-            save_cookies('bili', self.cookies)
-            
-        return j
+        parms = parms[:-1] + '59b43e04ad6965f34319062b478f83dd'
+        sign = hashlib.md5(parms.encode('utf-8')).hexdigest()
+        parms = parms[:-len('59b43e04ad6965f34319062b478f83dd')] + '&sign=' + sign
+        return parms
     
-    # 获取验证码
-    def get_captcha(self):
-        url = f"https://passport.bilibili.com/captcha"
-        try:
-            img = request_retry(
-                'GET', url, 
-                headers=BiliApi.default_hdrs, 
-                cookies=self.cookies
-            ).content
-        except:
-            return None
-        return img
         
     # 登录
-    def login(self, username, password, retry=5):
+    
+    def bili_tv_Login(self):
+        url = 'http://passport.bilibili.com/x/passport-tv-login/qrcode/auth_code'
+        nosign_data = {'appkey':'4409e2ce8ffd12b8', 
+         'local_id':'0', 
+         'ts':int(time.time())}
+        signed_data = self.CalcSign(nosign_data)
+        res = json.loads(requests.post(url + '?' + signed_data).text)
+        qrcode_url = res['data']['url']
+        auth_code = res['data']['auth_code']
+        print('复制此网址到浏览器登录')
+        print(qrcode_url)
+        while 1:
+            time.sleep(1)
+            url = 'https://passport.bilibili.com/x/passport-tv-login/qrcode/poll'
+            nosign_data = {'appkey':'4409e2ce8ffd12b8', 
+             'auth_code':auth_code, 
+             'local_id':'0', 
+             'ts':int(time.time())}
+            signed_data = self.CalcSign(nosign_data)
+            res = json.loads(requests.post(url + '?' + signed_data).text)
+            if res['code'] == 0:
+                return res
 
-        captcha = None
-        for _ in range(retry):
-            j = self.login_once(username, password, captcha)
 
-            if j['code'] == -105:
-                img = self.get_captcha()
-                if not img:
-                    time.sleep(1)
-                    continue
-                captcha = self.solve_captcha(img)
-                if not captcha:
-                    time.sleep(1)
-                continue
-            
-            return j
-            
-        return j
+    def login(self):
+        res = self.bili_tv_Login()
+        b_cookies = {'DedeUserID':str(res['data']['token_info']['mid']), 
+         'SESSDATA':res['data']['cookie_info']['cookies'][0]['value']}
+        save_cookies('bili',b_cookies)
+        uid = res['data']['token_info']['mid']
+        self.cookies = load_cookies('bili')
+        return res
+
 
     # 获取用户信息
     def get_user_info(self, fmt=True):
