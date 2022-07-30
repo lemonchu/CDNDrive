@@ -180,7 +180,12 @@ def tr_download(i, block_dict, f, offset):
         block = api.image_download(url)
         if not block:
             log(f"分块{i + 1}/{nblocks}第{j + 1}次下载失败")
-            if j == 9: succ = False
+            if j == 9:
+                log(f"启用备份下载线路")
+                block = api.image_backup_download(url)
+                if not block:
+                    succ = False
+                    continue
             continue
         block = encoder.decode(block)
         if calc_sha1(block) == block_dict['sha1']:

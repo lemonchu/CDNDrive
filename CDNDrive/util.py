@@ -9,7 +9,7 @@ import requests
 import json
 import time
 
-bundle_dir = '.\\cdrive_data\\'
+bundle_dir = 'cdrive_data'
 cookie_fname = 'cdrive_cookies.json'
 history_dir = 'cdrive_history'
 
@@ -17,6 +17,7 @@ ONE_TB = 1 << 40
 ONE_GB = 1 << 30
 ONE_MB = 1 << 20
 ONE_KB = 1 << 10
+
 
 def size_string(byte):
     if byte >= ONE_TB:
@@ -29,6 +30,7 @@ def size_string(byte):
         return f"{byte / ONE_KB:.2f} KB"
     else:
         return f"{int(byte)} B"
+
 
 def calc_hash(data, algo, hex=True):
     hasher = getattr(hashlib, algo)()
@@ -66,6 +68,7 @@ def safe_mkdir(dir):
     try: os.mkdir(dir)
     except: pass
 
+
 def read_history_all(site=None):
     dir = path.join(bundle_dir, history_dir)
     if not path.isdir(dir):
@@ -90,6 +93,7 @@ def read_history_all(site=None):
     else:
         return res
 
+
 def read_history(site=None, f4m_sha1=None):
     if site is None or f4m_sha1 is None:
         return read_history_all(site)
@@ -101,6 +105,7 @@ def read_history(site=None, f4m_sha1=None):
     except:
         return None
 
+
 def write_history(f4m_sha1, meta_dict, site, url):
     dir = path.join(bundle_dir, history_dir)
     safe_mkdir(dir)
@@ -109,6 +114,7 @@ def write_history(f4m_sha1, meta_dict, site, url):
     open(fname, 'w', encoding='utf-8').write(
         json.dumps(meta_dict, ensure_ascii=False, indent=2))
     
+
 def read_in_chunk(fname, size=4 * 1024 * 1024, cnt=-1):
     with open(fname, "rb") as f:
         idx = 0
@@ -119,9 +125,11 @@ def read_in_chunk(fname, size=4 * 1024 * 1024, cnt=-1):
             yield data
             idx += 1
                 
+
 def log(message):
     print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {message}")
     
+
 def request_retry(method, url, retry=10, **kwargs):
     kwargs.setdefault('timeout', 10)
     for i in range(retry):
@@ -143,6 +151,7 @@ def print_meta(meta_dict, prefix=""):
     for index, block_dict in enumerate(meta_dict['block']):
         print(f"{pad}分块{index + 1} ({size_string(block_dict['size'])}) URL: {block_dict['url']}")
         
+
 def print_clean_meta(meta_dict, prefix=""):
     pad = ' ' * len(prefix)
     print(f"{prefix}文件名: {meta_dict['filename']}")
@@ -155,12 +164,15 @@ def print_history_meta(meta_dict, prefix=""):
     print_clean_meta(meta_dict, prefix)
     print(f"{' ' * len(prefix)}META URL: {meta_dict['url']}")
         
+
 def block_offset(meta_dict, i):
     return sum(meta_dict['block'][j]['size'] for j in range(i))
     
+
 def ask_overwrite():
     return (input(f"文件已存在, 是否覆盖? [y/N] ") in ["y", "Y"])
     
+
 def load_cookies(site=None):
     fname = path.join(bundle_dir, cookie_fname)
     if not path.exists(fname):
@@ -173,6 +185,7 @@ def load_cookies(site=None):
         return cookies
     else: 
         return cookies.get(site, {})
+
 
 def save_cookies(site, cookies):
     full_cookies = load_cookies()

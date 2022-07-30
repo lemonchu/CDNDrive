@@ -4,6 +4,6 @@
 https://github.com/lemonchu/CDNDrive"""
 
 __author__ = "LemonPig"
-__email__ = "lemonpig-chu@qq.com"
+__email__ = "lemonpigchu@outlook.com"
 __license__ = "SATA"
-__version__ = "2022.7.23.1"
+__version__ = "2022.07.21.3"

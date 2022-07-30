@@ -19,5 +19,9 @@ class BaseApi:
         
     def image_download(self, url):
         return image_download(url)
+    
+    def image_backup_download(self, url):
+        log(f"备份下载功能尚未实现")
+        return
         
     

@@ -185,3 +185,4 @@ class BiliApi(BaseApi):
         if j['code'] == 0:
             j['data'] = j['data']['image_url']
         return j
+
